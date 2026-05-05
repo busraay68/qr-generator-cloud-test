@@ -1,0 +1,10 @@
+global:
+  # Kisa scrape araligi, demoda deploy sonrasi etkileri hizli gormemizi saglar.
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: "qr-code-generator"
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - app:8000

@@ -1,0 +1,84 @@
+{
+  "info": {
+    "name": "QR Code Generator Service Collection",
+    "_postman_id": "7cdd72df-0f93-481f-9a3b-d17c74dfb2a0",
+    "description": "Servisin temel uç noktalarını doğrulayan Postman koleksiyonu.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Healthcheck",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "name": "Create QR Code",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const body = pm.response.json();",
+              "pm.collectionVariables.set('qr_id', body.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"https://example.com/postman\",\n  \"label\": \"postman-demo\"\n}"
+        },
+        "url": "{{base_url}}/api/v1/qrcodes"
+      }
+    },
+    {
+      "name": "List QR Codes",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/qrcodes"
+      }
+    },
+    {
+      "name": "Get Sample QR Code",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/qrcodes/{{qr_id}}"
+      }
+    },
+    {
+      "name": "Download Sample QR Code",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/api/v1/qrcodes/{{qr_id}}/download"
+      }
+    },
+    {
+      "name": "Delete Sample QR Code",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/api/v1/qrcodes/{{qr_id}}"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "qr_id",
+      "value": "replace-after-create"
+    }
+  ]
+}

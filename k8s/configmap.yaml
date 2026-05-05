@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: qr-code-generator-config
+data:
+  # ConfigMap ile ortam ayarlarını imajdan ayırıyoruz; bu da bulut mimarisinde taşınabilirlik sağlar.
+  APP_ENV: "kubernetes"
+  DATABASE_URL: "postgresql+psycopg://app:app@postgres:5432/qr_service"
+  S3_BUCKET_NAME: "qr-code-assets"
+  S3_REGION: "us-east-1"
+  S3_ENDPOINT_URL: "http://localstack:4566"
+  AWS_ACCESS_KEY_ID: "test"
+  AWS_SECRET_ACCESS_KEY: "test"

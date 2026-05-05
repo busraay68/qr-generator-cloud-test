@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ app_name }}</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --surface-muted: #f7f7f7;
+        --ink: #111111;
+        --muted: #5f5f5f;
+        --border: #dddddd;
+        --border-strong: #c9c9c9;
+        --shadow: 0 18px 45px rgba(17, 17, 17, 0.06);
+        --success: #0f7a32;
+        --warn: #9a6700;
+        --danger: #b42318;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+
+      .shell {
+        width: min(1240px, 100%);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.1rem 0 0.75rem;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+      }
+
+      .brand-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background:
+          linear-gradient(90deg, #111 22%, transparent 22% 28%, #111 28% 50%, transparent 50% 56%, #111 56% 78%, transparent 78%),
+          linear-gradient(#111 22%, transparent 22% 28%, #111 28% 50%, transparent 50% 56%, #111 56% 78%, transparent 78%);
+        background-color: #fff;
+        background-size: 100% 100%;
+      }
+
+      .brand-copy h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 2vw, 2.25rem);
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+
+      .brand-copy p {
+        margin: 0.22rem 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.72fr);
+        gap: 0.8rem;
+      }
+
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: var(--surface);
+        padding: 0.95rem;
+      }
+
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: flex-start;
+        margin-bottom: 0.7rem;
+      }
+
+      .panel-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .form-layout {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.45rem;
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        width: 100%;
+        font: inherit;
+      }
+
+      input,
+      select,
+      textarea {
+        border: 1px solid var(--border-strong);
+        border-radius: 16px;
+        padding: 0.85rem 0.95rem;
+        background: #fff;
+        color: var(--ink);
+      }
+
+      textarea {
+        min-height: 118px;
+        resize: vertical;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #111;
+        box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+      }
+
+      .field-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 180px;
+        gap: 0.7rem;
+      }
+
+      .microcopy-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+        margin-top: -0.15rem;
+      }
+
+      .button-row {
+        display: flex;
+        gap: 0.7rem;
+      }
+
+      button {
+        border-radius: 16px;
+        border: 1px solid #111;
+        padding: 0.88rem 1rem;
+        cursor: pointer;
+        font-weight: 800;
+        transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-button {
+        background: #111;
+        color: #fff;
+      }
+
+      .secondary-button {
+        background: #fff;
+        color: #111;
+      }
+
+      .status {
+        min-height: 1.2rem;
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .status.success {
+        color: var(--success);
+      }
+
+      .status.error {
+        color: var(--danger);
+      }
+
+      .metrics-strip {
+        display: none;
+      }
+
+      .preview-panel {
+        display: grid;
+        grid-template-rows: auto 1fr auto auto;
+        gap: 0.65rem;
+      }
+
+      .preview-stage {
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background:
+          linear-gradient(0deg, rgba(17, 17, 17, 0.015), rgba(17, 17, 17, 0.015)),
+          #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 230px;
+        padding: 0.75rem;
+      }
+
+      .preview-empty {
+        max-width: 260px;
+        text-align: center;
+        color: var(--muted);
+      }
+
+      .preview-empty strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 0.5rem;
+      }
+
+      .preview-visual {
+        display: none;
+        width: 100%;
+      }
+
+      .preview-visual.active {
+        display: block;
+      }
+
+      .preview-visual img {
+        display: block;
+        width: min(100%, 220px);
+        margin: 0 auto;
+        padding: 0.7rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+
+      .preview-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .preview-meta-card {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 0.65rem 0.8rem;
+      }
+
+      .preview-meta-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+        margin-bottom: 0.18rem;
+      }
+
+      .download-row {
+        display: flex;
+        gap: 0.55rem;
+      }
+
+      .download-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        min-height: 44px;
+        padding: 0.68rem 0.8rem;
+        border-radius: 14px;
+        border: 1px solid var(--border-strong);
+        background: #fff;
+        color: var(--ink);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .recent-list {
+        margin-top: 0.45rem;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface-muted);
+        padding: 0.45rem;
+        max-height: 126px;
+        overflow: auto;
+      }
+
+      .history-empty,
+      .history-item {
+        border-radius: 14px;
+        background: #fff;
+        border: 1px solid var(--border);
+        padding: 0.8rem 0.9rem;
+      }
+
+      .history-empty {
+        color: var(--muted);
+      }
+
+      .history-stack {
+        display: grid;
+        gap: 0.5rem;
+      }
+
+      .history-item strong {
+        display: block;
+        margin-bottom: 0.3rem;
+      }
+
+      .history-item p {
+        margin: 0 0 0.45rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .history-item code {
+        display: block;
+        color: #111;
+        font-size: 0.82rem;
+        word-break: break-all;
+      }
+
+      .history-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.55rem;
+      }
+
+      .history-tag {
+        display: inline-flex;
+        padding: 0.3rem 0.55rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--surface-muted);
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          align-items: stretch;
+          padding: 0.8rem;
+        }
+
+        .shell {
+          padding: 1rem;
+        }
+
+        .topbar,
+        .panel-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .workspace,
+        .field-row,
+        .preview-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .button-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <main class="shell">
+        <div class="topbar">
+          <div class="brand">
+            <div class="brand-mark" aria-hidden="true"></div>
+            <div class="brand-copy">
+              <h1>QR Code Generator</h1>
+            </div>
+          </div>
+        </div>
+
+        <div class="workspace">
+          <section class="panel">
+            <div class="form-layout">
+              <div>
+                <label for="text-input">QR içeriği</label>
+                <textarea
+                  id="text-input"
+                  placeholder="Örnek: https://marmara.edu.tr/bmtm veya kısa bir açıklama metni"
+                ></textarea>
+                <div class="microcopy-row">
+                  <span>Kısa içerik önerilir.</span>
+                  <span id="char-count">0 / 512</span>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div>
+                  <label for="label-input">Kısa etiket</label>
+                  <input id="label-input" type="text" placeholder="ornek-etiket" maxlength="80" />
+                </div>
+
+                <div>
+                  <label for="error-correction-input">Hata düzeltme</label>
+                  <select id="error-correction-input">
+                    <option value="L">L · en küçük QR</option>
+                    <option value="M" selected>M · dengeli</option>
+                    <option value="Q">Q · daha dayanıklı</option>
+                    <option value="H">H · en dayanıklı</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="button-row">
+                <button id="create-button" class="primary-button" type="button">QR Oluştur</button>
+                <button id="reset-button" class="secondary-button" type="button">Temizle</button>
+              </div>
+
+              <div id="status" class="status"></div>
+
+              <div>
+                <div class="panel-header" style="margin-bottom: 0.7rem;">
+                  <div>
+                    <h2>Son Kayıtlar</h2>
+                  </div>
+                </div>
+                <div class="recent-list">
+                  <div id="history" class="history-stack"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel preview-panel">
+            <div class="panel-header">
+              <div>
+                <h2>Canlı Önizleme</h2>
+              </div>
+            </div>
+
+            <div class="preview-stage">
+              <div id="preview-empty" class="preview-empty">
+                <strong>Önizleme hazır</strong>
+                <span>Soldaki içerik alanına yazdığında QR taslağı burada belirecek.</span>
+              </div>
+
+              <div id="preview-visual" class="preview-visual">
+                <img id="qr-preview" alt="Oluşturulan QR kod önizlemesi" />
+              </div>
+            </div>
+
+            <div class="preview-meta">
+              <div class="preview-meta-card">
+                <span>Etiket</span>
+                <strong id="preview-label">Henüz girilmedi</strong>
+              </div>
+              <div class="preview-meta-card">
+                <span>Seviye</span>
+                <strong id="preview-level">M</strong>
+              </div>
+              <div class="preview-meta-card">
+                <span>Durum</span>
+                <strong id="preview-status">Hazır bekliyor</strong>
+              </div>
+              <div class="preview-meta-card">
+                <span>İndirme</span>
+                <strong id="preview-hit-count">0 kez</strong>
+              </div>
+            </div>
+
+            <div class="preview-meta-card">
+              <span>Son üretim özeti</span>
+              <strong id="result-meta">Kalıcı QR üretildiğinde kimlik, boyut ve bağlantı burada görünür.</strong>
+            </div>
+
+            <div class="download-row">
+              <a id="download-png-link" class="download-link" href="#">PNG indir</a>
+              <a id="download-svg-link" class="download-link" href="#">SVG indir</a>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const textInput = document.getElementById("text-input");
+      const labelInput = document.getElementById("label-input");
+      const errorCorrectionInput = document.getElementById("error-correction-input");
+      const statusEl = document.getElementById("status");
+      const historyEl = document.getElementById("history");
+      const charCountEl = document.getElementById("char-count");
+      const previewEmptyEl = document.getElementById("preview-empty");
+      const previewVisualEl = document.getElementById("preview-visual");
+      const previewImg = document.getElementById("qr-preview");
+      const previewLabelEl = document.getElementById("preview-label");
+      const previewLevelEl = document.getElementById("preview-level");
+      const previewStatusEl = document.getElementById("preview-status");
+      const previewHitCountEl = document.getElementById("preview-hit-count");
+      const resultMetaEl = document.getElementById("result-meta");
+      const downloadPngLinkEl = document.getElementById("download-png-link");
+      const downloadSvgLinkEl = document.getElementById("download-svg-link");
+      let previewTimer = null;
+
+      function getFormState() {
+        return {
+          text: textInput.value.trim(),
+          label: labelInput.value.trim(),
+          errorCorrection: errorCorrectionInput.value,
+          fillColor: "#111111",
+          backgroundColor: "#ffffff",
+        };
+      }
+
+      function updateCharacterCount() {
+        charCountEl.textContent = `${textInput.value.length} / 512`;
+      }
+
+      function setStatus(message = "", type = "") {
+        statusEl.className = "status";
+        if (type) {
+          statusEl.classList.add(type);
+        }
+        statusEl.textContent = message;
+      }
+
+      async function loadHistory() {
+        const response = await fetch("/api/v1/qrcodes");
+        const items = await response.json();
+        historyEl.innerHTML = "";
+
+        if (!items.length) {
+          historyEl.innerHTML = '<div class="history-empty">Henüz kayıt yok.</div>';
+          return;
+        }
+
+        for (const item of items) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "history-item";
+          wrapper.innerHTML = `
+            <strong>${item.label}</strong>
+            <p>${item.text}</p>
+            <code>${item.download_url}</code>
+            <div class="history-tags">
+              <span class="history-tag">${item.hit_count} indirme</span>
+              <span class="history-tag">${item.size_bytes} byte</span>
+              <span class="history-tag">${item.content_type}</span>
+            </div>
+          `;
+          historyEl.appendChild(wrapper);
+        }
+      }
+
+      async function refreshPreview() {
+        const state = getFormState();
+        previewLabelEl.textContent = state.label || "Otomatik etiket";
+        previewLevelEl.textContent = state.errorCorrection;
+
+        if (!state.text) {
+          previewEmptyEl.style.display = "block";
+          previewVisualEl.classList.remove("active");
+          previewStatusEl.textContent = "Metin bekleniyor";
+          return;
+        }
+
+        const previewUrl = new URL("/api/v1/qrcodes/preview", window.location.origin);
+        previewUrl.searchParams.set("text", state.text);
+        previewUrl.searchParams.set("error_correction", state.errorCorrection);
+        previewUrl.searchParams.set("fill_color", state.fillColor);
+        previewUrl.searchParams.set("background_color", state.backgroundColor);
+
+        previewImg.src = previewUrl.toString();
+        previewEmptyEl.style.display = "none";
+        previewVisualEl.classList.add("active");
+        previewStatusEl.textContent = "Önizleme güncel";
+      }
+
+      function queuePreview() {
+        if (previewTimer) {
+          window.clearTimeout(previewTimer);
+        }
+        previewStatusEl.textContent = "Önizleme yenileniyor";
+        previewTimer = window.setTimeout(refreshPreview, 220);
+      }
+
+      async function createQr() {
+        const state = getFormState();
+        setStatus("QR kod üretiliyor...");
+
+        const response = await fetch("/api/v1/qrcodes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: state.text,
+            label: state.label || null,
+            error_correction: state.errorCorrection,
+            fill_color: state.fillColor,
+            background_color: state.backgroundColor,
+          }),
+        });
+
+        if (!response.ok) {
+          let errorMessage =
+            "Kalıcı üretim başarısız oldu. İçerik boş olabilir ya da depolama katmanı hazır değildir.";
+          try {
+            const errorPayload = await response.json();
+            if (errorPayload && errorPayload.detail) {
+              errorMessage = errorPayload.detail;
+            }
+          } catch (error) {
+            // Yanıt gövdesi JSON değilse varsayılan mesaj kullanılır.
+          }
+          setStatus(
+            errorMessage,
+            "error"
+          );
+          return;
+        }
+
+        const data = await response.json();
+        setStatus("QR kod başarıyla üretildi ve depolama akışına gönderildi.", "success");
+        const previewUrl = new URL("/api/v1/qrcodes/preview", window.location.origin);
+        previewUrl.searchParams.set("text", state.text);
+        previewUrl.searchParams.set("error_correction", state.errorCorrection);
+        previewUrl.searchParams.set("fill_color", state.fillColor);
+        previewUrl.searchParams.set("background_color", state.backgroundColor);
+        previewImg.src = previewUrl.toString();
+        previewEmptyEl.style.display = "none";
+        previewVisualEl.classList.add("active");
+        previewStatusEl.textContent = "Kalıcı çıktı hazır";
+        previewHitCountEl.textContent = `${data.hit_count} kez`;
+        downloadPngLinkEl.href = data.download_url;
+        downloadSvgLinkEl.href = data.svg_download_url;
+        resultMetaEl.textContent =
+          `ID: ${data.id} · Boyut: ${data.size_bytes} byte`;
+        await loadHistory();
+      }
+
+      function resetForm() {
+        textInput.value = "";
+        labelInput.value = "";
+        errorCorrectionInput.value = "M";
+        updateCharacterCount();
+        setStatus("");
+        previewEmptyEl.style.display = "block";
+        previewVisualEl.classList.remove("active");
+        previewLabelEl.textContent = "Henüz girilmedi";
+        previewLevelEl.textContent = "M";
+        previewStatusEl.textContent = "Hazır bekliyor";
+        previewHitCountEl.textContent = "0 kez";
+        downloadPngLinkEl.href = "#";
+        downloadSvgLinkEl.href = "#";
+        resultMetaEl.textContent = "Kalıcı QR üretildiğinde kimlik, boyut ve bağlantı burada görünür.";
+      }
+
+      textInput.addEventListener("input", () => {
+        updateCharacterCount();
+        queuePreview();
+      });
+      labelInput.addEventListener("input", queuePreview);
+      errorCorrectionInput.addEventListener("change", queuePreview);
+
+      document.getElementById("create-button").addEventListener("click", createQr);
+      document.getElementById("reset-button").addEventListener("click", resetForm);
+
+      updateCharacterCount();
+      loadHistory();
+    </script>
+  </body>
+</html>
