@@ -1,0 +1,17 @@
+.DS_Store
+.venv/
+.venv311/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+playwright-report/
+test-results/
+docs/generated/
+qr_service.db
+local_storage/
