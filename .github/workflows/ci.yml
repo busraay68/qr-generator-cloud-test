@@ -1,0 +1,85 @@
+name: CI-CD
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: qr-code-generator
+      IMAGE_TAG: ${{ github.sha }}
+      S3_ENDPOINT_URL: http://localhost:4566
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node for Newman
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Newman
+        # Postman koleksiyonu için Newman kurulur.
+        run: npm install -g newman
+
+      - name: Start LocalStack
+        # LocalStack CI içinde S3 benzeri servis sağlar.
+        run: docker run -d --name localstack -p 4566:4566 -e SERVICES=s3 -e AWS_DEFAULT_REGION=us-east-1 localstack/localstack:3.8
+
+      - name: Install project dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Install Playwright browser
+        run: python -m playwright install --with-deps chromium
+
+      - name: Run lint
+        run: ruff check .
+
+      - name: Run unit and integration tests with coverage
+        run: pytest --cov=src --cov-report=term-missing --cov-fail-under=70 tests/unit tests/integration
+
+      - name: Build Docker image
+        run: docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+
+      - name: Setup Minikube
+        uses: medyagh/setup-minikube@latest
+
+      - name: Load image into Minikube
+        run: minikube image load ${IMAGE_NAME}:${IMAGE_TAG}
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/configmap.yaml
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+          kubectl set image deployment/qr-code-generator qr-code-generator=${IMAGE_NAME}:${IMAGE_TAG}
+          kubectl rollout status deployment/qr-code-generator --timeout=180s
+
+      - name: Resolve service URL
+        run: echo "APP_URL=$(minikube service qr-code-generator --url)" >> $GITHUB_ENV
+
+      - name: Smoke test
+        # Sağlık kontrolü dağıtımdan sonra doğrulanır.
+        run: curl --fail ${APP_URL}/health
+
+      - name: Run E2E tests
+        run: E2E_BASE_URL=${APP_URL} pytest tests/e2e/test_qr_ui.py
+
+      - name: Run Postman collection with Newman
+        run: newman run postman/collection.json --env-var base_url=${APP_URL}
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run performance test
+        run: k6 run -e BASE_URL=${APP_URL} perf/load-test.js
