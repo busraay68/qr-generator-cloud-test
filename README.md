@@ -1,58 +1,61 @@
-QR Code Generator Service
+# QR Code Generator Service
 
-Bu proje, Bulut Mimarilerinde Test Mühendisliği dersi kapsamında
-Konu 35: QR Code Generator Service başlığıyla geliştirilmiştir.
+Bu proje, `Bulut Mimarilerinde Test Mühendisliği` dersi dönem ödevi için `Konu 35: QR Code Generator Service` başlığı altında hazırlanmıştır.
 
-🚀 Proje Özeti
+## Genel Bakış
 
-Bu servis, kullanıcıdan alınan metni QR koda dönüştürür, çıktıları PNG ve SVG formatlarında saklar ve bu dosyaların indirilmesini sağlar. Ayrıca her QR kod için indirme sayısı gibi üst veriler veritabanında tutulur.
+Uygulama kullanıcıdan aldığı metin için QR kod üretir, dosyaları `PNG` ve `SVG` olarak depolar, kayıt üst verisini veritabanında tutar ve indirme isteklerini uygulama üzerinden sunar.
 
-✨ Özellikler
-FastAPI tabanlı REST API
-Basit ve tek sayfa web arayüzü
-PNG ve SVG formatında QR üretimi
-İndirme sayısı takibi (hit_count)
-LocalStack S3 ve local storage fallback desteği
-Docker Compose ve Kubernetes uyumu
-CI/CD süreci (GitHub Actions)
-Çok katmanlı test yapısı:
-Unit: pytest
-Entegrasyon: pytest + testcontainers
-E2E: Playwright
-Performans: k6
-🧱 Teknoloji Seçimleri
-Katman	Teknoloji	Gerekçe
-API	FastAPI	Yüksek performans, tip güvenliği
-ORM	SQLAlchemy	Esnek ve güçlü veri modeli
-Veritabanı	PostgreSQL	Güvenilir ilişkisel yapı
-Depolama	LocalStack S3	S3 davranışını yerelde simüle etme
-Test	pytest	Basit ve güçlü test altyapısı
-E2E	Playwright	Gerçek kullanıcı senaryoları
-Performans	k6	Yük testi ve metrik analizi
-Monitoring	Prometheus + Grafana	Gözlemlenebilirlik
-🔄 Mimari Akış
-Kullanıcı API veya UI üzerinden veri gönderir
-Veri Pydantic ile doğrulanır
-QR kod (PNG + SVG) üretilir
-Dosyalar depolama katmanına yazılır
-Üst veri veritabanına kaydedilir
-İndirme isteğinde dosya storage’dan okunur
-hit_count her indirmede artırılır
+Öne çıkan özellikler:
 
-📌 Not:
-LocalStack erişilemezse sistem otomatik olarak local_storage/ klasörüne geçer.
+- `FastAPI` tabanlı REST API
+- Tek sayfa sade web arayüzü
+- `PNG` ve `SVG` çıktı desteği
+- İndirme sayısı takibi
+- `LocalStack S3` ve yerel depolama uyumu
+- `PostgreSQL`, `Docker Compose`, `Kubernetes`, `GitHub Actions`
+- `pytest`, `Playwright`, `k6`, `Postman/Newman` test akışı
 
-🔌 API Endpointleri
-GET    /
-GET    /health
-POST   /api/v1/qrcodes
-GET    /api/v1/qrcodes
-GET    /api/v1/qrcodes/{qr_id}
-GET    /api/v1/qrcodes/{qr_id}/download?format=png
-GET    /api/v1/qrcodes/{qr_id}/download?format=svg
-GET    /api/v1/qrcodes/preview
-DELETE /api/v1/qrcodes/{qr_id}
-📁 Proje Yapısı
+## Teknoloji Tercihleri
+
+| Katman | Seçim | Gerekçe |
+|---|---|---|
+| API | FastAPI | Tip güvenliği, hızlı geliştirme, kolay test edilebilir yapı |
+| Veritabanı | SQLAlchemy + PostgreSQL | İlişkisel üst veri yönetimi ve container uyumu |
+| Depolama | LocalStack S3 | S3 davranışını yerelde tekrarlayabilme |
+| Unit Test | pytest | Fixture, parametrizasyon ve hızlı geri bildirim |
+| Entegrasyon Testi | pytest + testcontainers | Gerçek PostgreSQL davranışını doğrulama |
+| E2E Test | Playwright | Tarayıcı seviyesinde kullanıcı akışını doğrulama |
+| Performans Testi | k6 | Gecikme ve hata oranı takibi |
+| İzleme | Prometheus + Grafana | Metrik toplama ve panel gösterimi |
+
+## Mimari Akış
+
+1. Kullanıcı arayüzden veya API üzerinden içerik gönderir.
+2. İstek `Pydantic` ile doğrulanır.
+3. Uygulama `PNG` ve `SVG` QR dosyalarını üretir.
+4. Dosyalar önce depolama katmanına yazılır.
+5. Üst veri veritabanına kaydedilir.
+6. İndirme uç noktası dosyayı depolamadan okuyup istemciye iletir.
+7. Her indirme işleminde `hit_count` alanı güncellenir.
+
+`LocalStack` erişilemediğinde uygulama otomatik olarak `local_storage/` klasörüne düşer. Böylece geliştirme ve demo akışı kesilmez.
+
+## API İşlemleri
+
+- `GET /`
+- `GET /health`
+- `POST /api/v1/qrcodes`
+- `GET /api/v1/qrcodes`
+- `GET /api/v1/qrcodes/{qr_id}`
+- `GET /api/v1/qrcodes/{qr_id}/download?format=png`
+- `GET /api/v1/qrcodes/{qr_id}/download?format=svg`
+- `GET /api/v1/qrcodes/preview`
+- `DELETE /api/v1/qrcodes/{qr_id}`
+
+## Proje Yapısı
+
+```text
 bmtm-qr-code-generator/
 ├── .github/workflows/
 ├── docs/
@@ -66,49 +69,90 @@ bmtm-qr-code-generator/
 ├── docker-compose.yml
 ├── pyproject.toml
 └── README.md
-⚙️ Kurulum
+```
+
+## Kurulum
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .[dev]
 python -m playwright install chromium
-▶️ Çalıştırma
-Yerel geliştirme
+```
+
+## Çalıştırma
+
+Yerel geliştirme:
+
+```bash
+source .venv/bin/activate
 uvicorn src.main:app --host 127.0.0.1 --port 8000
-Docker ile
+```
+
+Tüm servislerle birlikte:
+
+```bash
 docker compose up --build
-Servisler
-App → http://localhost:8000
-Grafana → http://localhost:3000
-Prometheus → http://localhost:9090
-LocalStack → http://localhost:4566
-🧪 Testler
-Tüm testler
+```
+
+Servis adresleri:
+
+- Uygulama: `http://localhost:8000`
+- Grafana: `http://localhost:3000`
+- Prometheus: `http://localhost:9090`
+- LocalStack: `http://localhost:4566`
+
+## Testler
+
+Tüm testler:
+
+```bash
 pytest --cov=src --cov-report=term-missing --cov-fail-under=70
-Unit
+```
+
+Unit testler:
+
+```bash
 pytest tests/unit
-Entegrasyon
+```
+
+Entegrasyon testleri:
+
+```bash
 S3_ENDPOINT_URL=http://localhost:4566 pytest tests/integration -m integration
-E2E
+```
+
+E2E testi:
+
+```bash
 E2E_BASE_URL=http://127.0.0.1:8000 pytest tests/e2e/test_qr_ui.py -q
-Performans
+```
+
+Performans testi:
+
+```bash
 docker run --rm -v "$PWD:/work" -w /work grafana/k6 run -e BASE_URL=http://host.docker.internal:8000 perf/load-test.js
-☸️ Kubernetes
+```
+
+## Kubernetes
+
+```bash
 minikube start --driver=docker
 docker compose build app
 docker tag bmtm-qr-code-generator-app:latest qr-code-generator:local
 minikube image load qr-code-generator:local
-
 kubectl apply -f k8s/configmap.yaml
 kubectl apply -f k8s/deployment.yaml
 kubectl apply -f k8s/service.yaml
-
 kubectl rollout status deployment/qr-code-generator --timeout=180s
 minikube service qr-code-generator --url
-📚 Dokümantasyon
+```
 
-docs/ klasöründe proje çıktıları yer alır:
+## Dokümantasyon
 
-final-report.pdf → Proje raporu
-slides.pdf → Sunum
-demo-runbook.md → Demo akışı
-final-checklist.md → Teslim kontrol listesi
+`docs/` klasöründe mimari diyagram, rapor ve slayt dosyaları yer alır.
+
+- `docs/final-report.pdf`: final rapor
+- `docs/slides.pdf`: sunum çıktısı
+- `docs/demo-runbook.md`: canlı demo ve video akışı
+- `docs/final-checklist.md`: teslim öncesi son kontrol listesi
