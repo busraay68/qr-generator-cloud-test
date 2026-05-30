@@ -104,7 +104,7 @@ def download_qr_code(
         fmt=format,
     )
     extension = "png" if format == "png" else "svg"
-    headers = {"Content-Disposition": f'inline; filename="{record.label}.{extension}"'}
+    headers = {"Content-Disposition": f'attachment; filename="{record.label}.{extension}"'}
     return StreamingResponse(iter([payload]), media_type=content_type, headers=headers)
 
 
