@@ -55,6 +55,7 @@ def create_application() -> FastAPI:
                 "request": request,
                 "app_name": settings.app_name,
             },
+            request=request
         )
 
     @app.get("/health", tags=["ops"])
