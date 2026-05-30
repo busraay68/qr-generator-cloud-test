@@ -50,8 +50,8 @@ def create_application() -> FastAPI:
         """Ana arayüzü döndürür."""
 
         return templates.TemplateResponse(
-            "index.html",
-            {
+            name="index.html",
+            context={
                 "request": request,
                 "app_name": settings.app_name,
             },
