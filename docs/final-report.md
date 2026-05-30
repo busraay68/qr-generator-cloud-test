@@ -1,8 +1,8 @@
 # MTH2526-B25 - Bulut Mimarilerinde Test Mühendisliği Dönem Projesi
 ## Konu 35: QR Code Generator Service - Akademik Final Raporu
 
-**Geliştirici:** [Adınız Soyadınız]  
-**Öğrenci Numarası:** [Öğrenci Numaranız]  
+**Geliştirici:** Büşra Ay (busraay687@gmail.com)
+**Öğrenci Numarası:** 170620002 
 **Bölüm:** Bilgisayar Mühendisliği Bölümü  
 **Dönem:** 2025–2026 Bahar Yarıyılı  
 **Eğitmen:** Büşra Ayaksız (busra.ayaksiz@useinsider.com)  
