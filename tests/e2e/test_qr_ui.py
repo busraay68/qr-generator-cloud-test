@@ -96,10 +96,9 @@ def test_download_links_increment_hit_count():
         assert png_url is not None
         assert svg_url is not None
 
-        page.goto(png_url, wait_until="networkidle")
-        page.go_back(wait_until="networkidle")
-        page.goto(svg_url, wait_until="networkidle")
-        page.go_back(wait_until="networkidle")
+        
+        page.request.get(png_url)
+        page.request.get(svg_url)
         page.reload(wait_until="networkidle")
 
         playwright.expect(page.locator("#history")).to_contain_text("2 indirme")
