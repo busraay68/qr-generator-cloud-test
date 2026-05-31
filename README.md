@@ -147,12 +147,27 @@ kubectl apply -f k8s/service.yaml
 kubectl rollout status deployment/qr-code-generator --timeout=180s
 minikube service qr-code-generator --url
 ```
+Not (Mac ARM Mimari ve Port Yönlendirme Çözümü):
+Apple Silicon (M1/M2/M3) cihazlarda, Docker sürücüsünün yerel ağ kısıtlamaları nedeniyle pod'lar arası bağlantı kopukluğu (Internal Server Error) yaşanabilir. Yukarıdaki adımların ardından arayüze ve veritabanına sorunsuz erişmek için aşağıdaki port yönlendirme komutları arka planda çalıştırılmalıdır:
+
+```bash
+# Bağımlılıkların lokal ağa bağlanması ve arayüzün (localhost:8000) ayağa kalkması için:
+kubectl port-forward deployment/postgres 5432:5432 &
+kubectl port-forward deployment/localstack 4566:4566 &
+kubectl port-forward deployment/qr-code-generator 8000:8000
+```
 
 ## Postman 
 Minikube'ün verdiği URL'i Newman'a base_url olarak beslenir
 
 ```bash
 newman run postman/collection.json --env-var base_url=$(minikube service qr-code-generator --url)
+```
+Alternatif (Port Forwarding ile Kararlı Çalıştırma):
+Eğer Mac ortamında yukarıdaki dinamik servis tüneli terminali kilitlerse veya bağlantı hatası verirse, kurulan port yönlendirme tüneli sayesinde testler doğrudan localhost:8000 adresi üzerinden en kararlı haliyle koşturulabilir:
+
+```bash
+newman run postman/collection.json --env-var base_url=http://localhost:8000
 ```
 
 ## Dokümantasyon
