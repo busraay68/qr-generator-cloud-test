@@ -178,3 +178,6 @@ newman run postman/collection.json --env-var base_url=http://localhost:8000
 - `docs/slides.pdf`: sunum çıktısı
 - `docs/demo-runbook.md`: canlı demo ve video akışı
 - `docs/final-checklist.md`: teslim öncesi son kontrol listesi
+
+## Sunum Videosu
+https://drive.google.com/file/d/1YEpdCdh98uJabqbcA-JK-1qTmamI2hzN/view?usp=sharing
