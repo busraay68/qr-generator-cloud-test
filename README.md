@@ -149,8 +149,11 @@ minikube service qr-code-generator --url
 ```
 
 ## Postman 
-# Minikube'ün verdiği URL'i Newman'a base_url olarak beslenir
+Minikube'ün verdiği URL'i Newman'a base_url olarak beslenir
+
+```bash
 newman run postman/collection.json --env-var base_url=$(minikube service qr-code-generator --url)
+```
 
 ## Dokümantasyon
 
