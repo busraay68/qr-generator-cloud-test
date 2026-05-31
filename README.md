@@ -148,6 +148,10 @@ kubectl rollout status deployment/qr-code-generator --timeout=180s
 minikube service qr-code-generator --url
 ```
 
+## Postman 
+# Minikube'ün verdiği URL'i Newman'a base_url olarak beslenir
+newman run postman/collection.json --env-var base_url=$(minikube service qr-code-generator --url)
+
 ## Dokümantasyon
 
 `docs/` klasöründe mimari diyagram, rapor ve slayt dosyaları yer alır.
