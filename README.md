@@ -180,4 +180,4 @@ newman run postman/collection.json --env-var base_url=http://localhost:8000
 - `docs/final-checklist.md`: teslim öncesi son kontrol listesi
 
 ## Sunum Videosu
-[https://drive.google.com/file/d/1YEpdCdh98uJabqbcA-JK-1qTmamI2hzN/view?usp=sharing](https://drive.google.com/file/d/1tFF9-EuH6ydVT3bexZpgDcuVw9Jflzxt/view?usp=sharing)
+[[https://drive.google.com/file/d/1YEpdCdh98uJabqbcA-JK-1qTmamI2hzN/view?usp=sharing](https://drive.google.com/file/d/1tFF9-EuH6ydVT3bexZpgDcuVw9Jflzxt/view?usp=sharing)](https://drive.google.com/file/d/1tFF9-EuH6ydVT3bexZpgDcuVw9Jflzxt/view?usp=sharing)
