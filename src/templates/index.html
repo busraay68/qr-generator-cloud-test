@@ -693,6 +693,29 @@
       labelInput.addEventListener("input", queuePreview);
       errorCorrectionInput.addEventListener("change", queuePreview);
 
+      async function onDownloadClick(e) {
+        const href = e.currentTarget.href;
+        if (!href || href === "#") return;
+        // Tarayıcı indirmeyi başlatır; kısa bir süre sonra backend hit_count'u günceller.
+        setTimeout(async () => {
+          try {
+            // Aktif QR'ın ID'sini URL'den çıkar
+            const match = href.match(/qrcodes\/([^/]+)\/download/);
+            if (match) {
+              const res = await fetch(`/api/v1/qrcodes/${match[1]}`);
+              if (res.ok) {
+                const data = await res.json();
+                previewHitCountEl.textContent = `${data.hit_count} kez`;
+              }
+            }
+            await loadHistory();
+          } catch (_) {}
+        }, 500);
+      }
+
+      downloadPngLinkEl.addEventListener("click", onDownloadClick);
+      downloadSvgLinkEl.addEventListener("click", onDownloadClick);
+
       document.getElementById("create-button").addEventListener("click", createQr);
       document.getElementById("reset-button").addEventListener("click", resetForm);
 
